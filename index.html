@@ -125,7 +125,7 @@
     function addScore(){ const now=Date.now(); state.combo=(now-state.lastClickAt<=350)?state.combo+1:1; state.lastClickAt=now; const gain=1+Math.floor(state.combo/10); state.score+=gain; el.score.textContent=state.score; el.combo.textContent=state.combo; if(state.score>state.best){ state.best=state.score; el.best.textContent=state.best; localStorage.setItem('bctfHighScore', state.best) } checkMilestones(); }
     function checkMilestones(){ const m=[10,25,50,100,200]; if(m.includes(state.score)){ const {name}=CHAR[state.current]; alert(`Level ${state.score}!  ${name}이(가) 행복해해요 ✨`);} }
 
-    function playClick(){ try{ const a = el.sfx.cloneNode(); a.volume=0.75; a.play().catch(()=>{});}catch(e){} }
+    function playClick(){ try{ const a = el.sfx.cloneNode(); a.volume=1.0; a.play().catch(()=>{});}catch(e){} }
 
     function handleClick(evt){ const rect=el.charWrap.getBoundingClientRect(); const x=evt.clientX ?? (rect.left+rect.width/2); const y=evt.clientY ?? (rect.top+rect.height/2); const {color,word}=CHAR[state.current];
       playClick();
