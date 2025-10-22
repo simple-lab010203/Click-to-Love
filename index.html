@@ -147,30 +147,24 @@
       clickSound.currentTime = 0;
       clickSound.play().catch(()=>{});
 
-      // Heart + Word 애니메이션 위치 계산
-const rect = target.getBoundingClientRect();
-const scrollX = window.scrollX || window.pageXOffset || 0;
-const scrollY = window.scrollY || window.pageYOffset || 0;
-const x = rect.left + rect.width / 2 + scrollX;
-const y = rect.top + rect.height / 2 + scrollY;
+           // Heart animation
+      const heart = document.createElement('div');
+      heart.className = 'heart';
+      heart.textContent = '❤';
+      heart.style.left = x + 'px';
+      heart.style.top = y + 'px';
+      document.body.appendChild(heart);
+      setTimeout(()=>heart.remove(), 800);
 
-// Heart animation
-const heart = document.createElement('div');
-heart.className = 'heart';
-heart.textContent = '❤';
-heart.style.left = x + 'px';
-heart.style.top = y + 'px';
-document.body.appendChild(heart);
-setTimeout(() => heart.remove(), 800);
+      // Word animation
+      const word = document.createElement('div');
+      word.className = 'word';
+      word.textContent = wordText;
+      word.style.left = (x - 20) + 'px';
+      word.style.top = (y - 40) + 'px';
+      document.body.appendChild(word);
+      setTimeout(()=>word.remove(), 1200);
 
-// Word animation
-const word = document.createElement('div');
-word.className = 'word';
-word.textContent = wordText;
-word.style.left = (x - 20) + 'px';
-word.style.top = (y - 40) + 'px';
-document.body.appendChild(word);
-setTimeout(() => word.remove(), 1200);
     });
   </script>
 </body>
