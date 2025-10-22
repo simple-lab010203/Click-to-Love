@@ -17,66 +17,82 @@
     margin-top: 30px;
     font-size: 2em;
   }
+
+  /* 스테이지: 반응형 2열(모바일), 넓은 화면에선 자동 확장 */
   #stage{
-  margin: 24px auto;
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;        /* ★ 자동 줄바꿈 */
-  gap: 16px;              /* 모바일 여백 */
-  width: min(92vw, 720px);/* 화면 밖으로 안 나가게 */
-}
+    margin: 24px auto;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;        /* 자동 줄바꿈 */
+    gap: 16px;              /* 모바일 여백 */
+    width: min(92vw, 720px);/* 화면 밖으로 안 나가게 */
+  }
 
- .char{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  cursor: pointer;
-  transition: transform 0.2s;
-  width: calc(50% - 16px);     /* ★ 폰에서 2열 */
-}
-.char:hover{ transform: scale(1.05); }
+  .char{
+    position: relative;               /* ★ 카드 기준 컨테이너 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.2s;
+    width: calc(50% - 16px);          /* 폰에서 2열 */
+    user-select: none;
+  }
+  .char:hover{ transform: scale(1.05); }
 
-.char img{
-  width: 100%;                 /* ★ 컨테이너에 맞춤 */
-  max-width: 120px;            /* 폰에서 너무 커지지 않게 */
-  aspect-ratio: 1 / 1;         /* 정사각형 유지 */
-  height: auto;
-  border-radius: 15px;
-  object-fit: cover;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-}
-@media (min-width: 768px){
-  .char{ width: auto; }     /* 데스크톱은 가변 */
-  #stage{ gap: 24px; }
-  .char img{ width: 100px; height: 100px; }
-}
+  .char img{
+    width: 100%;                      /* 컨테이너에 맞춤 */
+    max-width: 120px;                 /* 폰에서 너무 커지지 않게 */
+    aspect-ratio: 1 / 1;              /* 정사각형 유지 */
+    height: auto;
+    border-radius: 15px;
+    object-fit: cover;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  }
+
+  @media (min-width: 768px){
+    .char{ width: auto; }             /* 데스크톱 가변 */
+    #stage{ gap: 24px; }
+    .char img{ width: 100px; height: 100px; }
+  }
 
   .name {
     margin-top: 5px;
     font-weight: bold;
   }
+
+  /* 카드 내부 기준으로 떠오르는 텍스트/하트 */
+  .word, .heart {
+    position: absolute;               /* ★ 카드 내부 절대 배치 */
+    left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    pointer-events: none;             /* 클릭 방해 방지 */
+  }
+
   .word {
-    position: absolute;
     font-weight: bold;
     animation: floatUp 1.2s ease-out forwards;
   }
   @keyframes floatUp {
-    0% { opacity: 1; transform: translateY(0); }
-    100% { opacity: 0; transform: translateY(-60px); }
+    0% { opacity: 1; transform: translate(-50%, -50%) translateY(0); }
+    100% { opacity: 0; transform: translate(-50%, -50%) translateY(-60px); }
   }
+
   .heart {
-    position: absolute;
     color: #FFD6E0;
     font-size: 24px;
     animation: pop 0.8s ease-out forwards;
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.15));
   }
   @keyframes pop {
-    0% { transform: scale(0.5); opacity: 1; }
-    50% { transform: scale(1.3); opacity: 1; }
-    100% { transform: scale(1.0); opacity: 0; }
+    0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; }
+    50% { transform: translate(-50%, -50%) scale(1.3); opacity: 1; }
+    100% { transform: translate(-50%, -50%) scale(1.0); opacity: 0; }
   }
+
   footer {
-    margin-top: 40px;
+    margin: 40px 0 24px;
     font-size: 0.9em;
     color: #888;
   }
@@ -84,6 +100,7 @@
 </head>
 <body>
   <h1>Click to Love 💘</h1>
+
   <div id="stage">
     <div class="char" data-name="금량이" data-word="감자!">
       <img src="images/geum.png" alt="금량이">
@@ -126,10 +143,11 @@
       <div class="name">찡찡이</div>
     </div>
   </div>
+
   <footer>Built by <b>Sotteok</b> · Click to Love 💘</footer>
 
   <audio id="clickSound" src="click.wav"></audio>
-  
+
   <script>
     const stage = document.getElementById('stage');
     const clickSound = document.getElementById('clickSound');
@@ -137,34 +155,33 @@
     stage.addEventListener('click', (e) => {
       const target = e.target.closest('.char');
       if (!target) return;
-      const rect = target.getBoundingClientRect();
-      const x = rect.left + rect.width / 2;
-      const y = rect.top + rect.height / 2;
+
       const wordText = target.dataset.word;
 
-      // Play click sound
+      // 사운드
       clickSound.volume = 1.0;
       clickSound.currentTime = 0;
       clickSound.play().catch(()=>{});
 
-           // Heart animation
+      // 랜덤 튀김(살짝 흔들림)
+      const dx = (Math.random() * 16 - 8);   // -8 ~ +8px
+      const dy = (Math.random() * 12 - 6);   // -6 ~ +6px
+
+      // 하트 (카드 내부에 붙임)
       const heart = document.createElement('div');
       heart.className = 'heart';
       heart.textContent = '❤';
-      heart.style.left = x + 'px';
-      heart.style.top = y + 'px';
-      document.body.appendChild(heart);
+      heart.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
+      target.appendChild(heart);
       setTimeout(()=>heart.remove(), 800);
 
-      // Word animation
+      // 단어 (카드 내부에 붙임)
       const word = document.createElement('div');
       word.className = 'word';
       word.textContent = wordText;
-      word.style.left = (x - 20) + 'px';
-      word.style.top = (y - 40) + 'px';
-      document.body.appendChild(word);
+      word.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px - 20px))`;
+      target.appendChild(word);
       setTimeout(()=>word.remove(), 1200);
-
     });
   </script>
 </body>
