@@ -71,9 +71,12 @@
   }
 
   .word {
-    font-weight: bold;
-    animation: floatUp 1.2s ease-out forwards;
-  }
+  color: #fff;                           /* 흰 글씨 */
+  text-shadow: 0 2px 4px rgba(0,0,0,0.35); /* 부드러운 그림자 */
+  font-weight: 700;
+  animation: floatUp 1.2s ease-out forwards;
+}
+
   @keyframes floatUp {
     0% { opacity: 1; transform: translate(-50%, -50%) translateY(0); }
     100% { opacity: 0; transform: translate(-50%, -50%) translateY(-60px); }
