@@ -19,22 +19,40 @@
   }
 
   /* 스테이지: 반응형 2열(모바일), 넓은 화면에선 자동 확장 */
-/* stage: 그리드(모바일 2열 / 데스크톱 6열) */
-#stage{
-  margin: 16px auto;
+/* 기본 설정 */
+#stage {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
-  width: min(92vw, 720px);
-  justify-items: center;
+  justify-content: center;
+  gap: 20px; /* 카드 간격 */
+  margin: 0 auto;
 }
-/* 데스크톱-와이드: 10열 */
-@media (min-width: 1200px){
-  #stage{
-    grid-template-columns: repeat(10, 1fr); /* 10개씩 */
-    width: min(92vw, 1200px);               /* 컨테이너도 조금 넓혀줌 */
+
+/* 모바일: 2열 (상하좌우 균일 간격) */
+@media (max-width: 768px) {
+  #stage {
+    grid-template-columns: repeat(2, minmax(140px, 1fr)); /* 카드 크기 약간 축소 */
+    gap: 16px; /* 상하좌우 균등 */
+    padding: 0 16px; /* 화면 양쪽 여백도 균형 맞추기 */
   }
 }
+
+/* 태블릿: 6열 */
+@media (min-width: 769px) and (max-width: 1199px) {
+  #stage {
+    grid-template-columns: repeat(6, 1fr);
+    gap: 20px;
+  }
+}
+
+/* PC: 10열 */
+@media (min-width: 1200px) {
+  #stage {
+    grid-template-columns: repeat(10, 1fr);
+    gap: 22px;
+    width: min(92vw, 1200px);
+  }
+}
+
 
 
 /* ✅ 카드(박스) 크기 완전 고정 */
