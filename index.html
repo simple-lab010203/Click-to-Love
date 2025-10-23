@@ -61,6 +61,12 @@
     font-weight: bold;
   }
 
+  .title{
+  font-size:.8em; color:#999; margin-top:2px;
+  width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; /* 긴 제목 … 처리 */
+}
+
+
   /* 카드 내부 기준으로 떠오르는 텍스트/하트 */
   .word, .heart {
     position: absolute;               /* ★ 카드 내부 절대 배치 */
@@ -246,7 +252,7 @@
       <img src="images/1to10.png" alt="정석&건준">
       <div class="name">정석&건준</div>
     </div>
-    <div class="char" data-name="애런&유진" data-word="5000달러!">
+    <div class="char" data-name="애런&유진" data-series="플래시라이트" data-word="5000달러!">
       <img src="images/fl.png" alt="애런&유진">
       <div class="name">애런&유진</div>
     </div>
@@ -270,6 +276,19 @@
   <script>
     const stage = document.getElementById('stage');
     const clickSound = document.getElementById('clickSound');
+
+    /* ✅ data-series 자동 렌더: 카드 아래에 .title 만들어 붙이고, 호버 툴팁(title)도 설정 */
+  document.querySelectorAll('#stage .char').forEach(el=>{
+    const series = el.dataset.series;
+    if (!series) return;
+    if (!el.querySelector('.title')) {
+      const t = document.createElement('div');
+      t.className = 'title';
+      t.textContent = series;
+      t.title = series; // 마우스 올리면 전체 제목 보여줌
+      el.appendChild(t);
+    }
+  });
 
     stage.addEventListener('click', (e) => {
       const target = e.target.closest('.char');
