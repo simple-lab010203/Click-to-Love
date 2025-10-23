@@ -272,7 +272,25 @@
 
 
   <audio id="clickSound" src="click.wav"></audio>
+<script>
+window.addEventListener('DOMContentLoaded', () => {
+  const stage = document.getElementById('stage');
+  if (!stage) return;
 
+  // 모든 캐릭터 카드 가져오기
+  const items = Array.from(stage.querySelectorAll('.char'));
+
+  // data-series 기준 ㄱㄴㄷ / ABC 순 정렬
+  items.sort((a, b) => {
+    const seriesA = a.getAttribute('data-series') || '';
+    const seriesB = b.getAttribute('data-series') || '';
+    return seriesA.localeCompare(seriesB, 'ko', { sensitivity: 'base' });
+  });
+
+  // 정렬 반영
+  items.forEach(el => stage.appendChild(el));
+});
+</script>
   <script>
     const stage = document.getElementById('stage');
     const clickSound = document.getElementById('clickSound');
