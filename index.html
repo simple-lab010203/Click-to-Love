@@ -19,53 +19,54 @@
   }
 
   /* 스테이지: 반응형 2열(모바일), 넓은 화면에선 자동 확장 */
-  #stage{
-    margin: 24px auto;
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;        /* 자동 줄바꿈 */
-    gap: 16px;              /* 모바일 여백 */
-    width: min(92vw, 720px);/* 화면 밖으로 안 나가게 */
-  }
-
-  .char{
-    position: relative;               /* ★ 카드 기준 컨테이너 */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    cursor: pointer;
-    transition: transform 0.2s;
-    width: calc(50% - 16px);          /* 폰에서 2열 */
-    user-select: none;
-  }
-  .char:hover{ transform: scale(1.05); }
-
-  .char img{
-    width: 100%;                      /* 컨테이너에 맞춤 */
-    max-width: 120px;                 /* 폰에서 너무 커지지 않게 */
-    aspect-ratio: 1 / 1;              /* 정사각형 유지 */
-    height: auto;
-    border-radius: 15px;
-    object-fit: cover;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  }
-
-  @media (min-width: 768px){
-    .char{ width: auto; }             /* 데스크톱 가변 */
-    #stage{ gap: 24px; }
-    .char img{ width: 100px; height: 100px; }
-  }
-
-  .name {
-    margin-top: 5px;
-    font-weight: bold;
-  }
-
-  .title{
-  font-size:.8em; color:#999; margin-top:2px;
-  width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; /* 긴 제목 … 처리 */
+/* 스테이지: flex → grid 로 변경 */
+#stage{
+  margin: 24px auto;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);   /* 모바일 2열 */
+  gap: 16px;
+  width: min(92vw, 720px);
+  justify-items: center;                    /* 셀 안 가운데 정렬 */
 }
 
+/* 카드: 셀 너비에 맞춰 동일 폭(=100%) */
+.char{
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.2s;
+  width: 100%;               /* ★ 가변폭 금지: 셀 가로 100%로 통일 */
+  max-width: 120px;          /* 너무 커지지 않게 상한 */
+  user-select: none;
+}
+.char:hover{ transform: scale(1.05); }
+
+.char img{
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  height: auto;
+  border-radius: 15px;
+  object-fit: cover;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+@media (min-width: 768px){
+  #stage{
+    grid-template-columns: repeat(6, 1fr); /* 데스크톱 6열 고정 */
+    gap: 24px;
+  }
+}
+
+/* 이름/제목 */
+.name { margin-top: 5px; font-weight: 700; line-height:1.2; }
+
+/* 제목(작품명) — 한 줄 … 처리로 높이 고정 느낌 */
+.title{
+  font-size:.8em; color:#999; margin-top:2px; line-height:1.2;
+  width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
 
   /* 카드 내부 기준으로 떠오르는 텍스트/하트 */
   .word, .heart {
