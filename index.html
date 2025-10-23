@@ -19,54 +19,80 @@
   }
 
   /* 스테이지: 반응형 2열(모바일), 넓은 화면에선 자동 확장 */
-/* 스테이지: flex → grid 로 변경 */
+/* stage: 그리드(모바일 2열 / 데스크톱 6열) */
 #stage{
   margin: 24px auto;
   display: grid;
-  grid-template-columns: repeat(2, 1fr);   /* 모바일 2열 */
+  grid-template-columns: repeat(2, 1fr);
   gap: 16px;
   width: min(92vw, 720px);
-  justify-items: center;                    /* 셀 안 가운데 정렬 */
+  justify-items: center;
+}
+@media (min-width: 768px){
+  #stage{
+    grid-template-columns: repeat(6, 1fr);
+    gap: 24px;
+  }
 }
 
-/* 카드: 셀 너비에 맞춰 동일 폭(=100%) */
+/* ✅ 카드(박스) 크기 완전 고정 */
 .char{
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: flex-start;
+
+  width: 100%;
+  max-width: 120px;              /* 셀 내 가로 상한 */
+  height: 188px;                 /* ★ 카드 높이 고정 (필요시 180~200px 조절) */
+
+  padding: 10px 8px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(0,0,0,.06);
   cursor: pointer;
-  transition: transform 0.2s;
-  width: 100%;               /* ★ 가변폭 금지: 셀 가로 100%로 통일 */
-  max-width: 120px;          /* 너무 커지지 않게 상한 */
+  transition: transform .2s;
   user-select: none;
 }
 .char:hover{ transform: scale(1.05); }
 
+/* 이미지 크기 고정 (정사각) */
 .char img{
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  height: auto;
+  width: 88px;
+  height: 88px;
   border-radius: 15px;
   object-fit: cover;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
 }
 
-@media (min-width: 768px){
-  #stage{
-    grid-template-columns: repeat(6, 1fr); /* 데스크톱 6열 고정 */
-    gap: 24px;
-  }
+/* 이름: 한 줄 고정 + … */
+.name{
+  margin-top: 6px;
+  font-weight: 700;
+  line-height: 1.2;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;       /* ★ 이름 길어도 높이 변동 없음 */
 }
 
-/* 이름/제목 */
-.name { margin-top: 5px; font-weight: 700; line-height:1.2; }
-
-/* 제목(작품명) — 한 줄 … 처리로 높이 고정 느낌 */
+/* 제목(작품명): 두 줄까지만 + …  → 높이 고정 */
 .title{
-  font-size:.8em; color:#999; margin-top:2px; line-height:1.2;
-  width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  font-size: .8em;
+  color: #999;
+  margin-top: 2px;
+  line-height: 1.2;
+  width: 100%;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;         /* 최대 2줄 */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  height: 2.4em;                  /* ★ 2줄 기준 높이 고정 */
 }
+
+
 
   /* 카드 내부 기준으로 떠오르는 텍스트/하트 */
   .word, .heart {
