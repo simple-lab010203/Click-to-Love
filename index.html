@@ -256,7 +256,21 @@
       <div class="name">more...</div>
     </div>
   </div>
-<img src="https://count.getloli.com/get/@ClickToLove?theme=moebooru" alt="visits" style="margin-top:10px;">
+<div id="visitorCount" style="font-weight:700; color:#555; font-size:14px; margin-bottom:8px;">
+  visits: <span id="countNum">...</span>
+</div>
+
+<script>
+fetch("https://api.countapi.xyz/hit/simple-lab010203.github.io/Click-to-Love")
+  .then(res => res.json())
+  .then(res => {
+    document.getElementById("countNum").textContent = res.value.toLocaleString();
+  })
+  .catch(() => {
+    document.getElementById("countNum").textContent = "offline";
+  });
+</script>
+
 <footer>Built by <b>Sotteok</b> · Click to Love 💘</footer>
 
 
