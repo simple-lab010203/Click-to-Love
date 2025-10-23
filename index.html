@@ -303,5 +303,90 @@
       setTimeout(()=>word.remove(), 1200);
     });
   </script>
+  <!-- Visit Counter (EN/KR) — GitHub Pages friendly, 3-step fallback
+1) CountAPI (primary) -> 2) SeeYouFarm SVG parse (fallback) -> 3) localStorage (offline)
+깃허브 페이지에서 작동하도록 설계. 외부가 막혀도 최소 숫자는 표시됨. -->
+
+<div style="font:600 14px/1.4 system-ui, -apple-system, Segoe UI, Roboto, Apple SD Gothic Neo, Noto Sans KR, sans-serif">
+  방문자 수: <span id="visitCount">…</span>
+</div>
+
+<script>
+(function () {
+  const el = document.getElementById('visitCount');
+
+  // ✅ ❶ CountAPI — namespace/key는 프로젝트에 맞게 고정 (원하면 바꿔도 됨)
+  const NAMESPACE = 'simple-lab010203.github.io';
+  const KEY = 'Click-to-Love'; // 프로젝트 키 (페이지 단위로 바꾸고 싶으면 파일 경로 등으로 구분)
+
+  // ✅ ❷ SeeYouFarm — 현재 페이지 URL 기준으로 배지 SVG에서 숫자만 파싱
+  const SEEYOU_URL = `https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=${encodeURIComponent(location.origin + location.pathname)}&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=visits&edge_flat=false`;
+
+  // ✅ ❸ localStorage — 외부 서비스 불가 시 최소한의 표시
+  const LS_KEY = 'visitCount_local';
+
+  // 표시 헬퍼
+  function setCount(n) { el.textContent = String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+
+  // 1) CountAPI 시도
+  function tryCountAPI() {
+    const url = `https://api.countapi.xyz/update/${encodeURIComponent(NAMESPACE)}/${encodeURIComponent(KEY)}?amount=1`;
+    return fetch(url, { cache: 'no-store' })
+      .then(r => {
+        if (!r.ok) throw new Error('CountAPI HTTP ' + r.status);
+        return r.json();
+      })
+      .then(j => {
+        if (typeof j.value !== 'number') throw new Error('CountAPI invalid payload');
+        setCount(j.value);
+        // 성공 시 로컬에도 백업 저장 (가끔 외부 막혀도 최근값 보여주려고)
+        try { localStorage.setItem(LS_KEY, String(j.value)); } catch (e) {}
+        return true;
+      });
+  }
+
+  // 2) SeeYouFarm SVG 파싱 시도
+  function trySeeYouFarm() {
+    return fetch(SEEYOU_URL, { cache: 'no-store' })
+      .then(r => {
+        if (!r.ok) throw new Error('SeeYouFarm HTTP ' + r.status);
+        return r.text();
+      })
+      .then(svg => {
+        // SVG 안의 마지막 숫자 텍스트를 추출
+        const matches = svg.match(/>(\d+)</g);
+        if (!matches || !matches.length) throw new Error('No number found in SVG');
+        const last = matches[matches.length - 1];
+        const num = parseInt(last.replace(/[^\d]/g, ''), 10);
+        if (Number.isNaN(num)) throw new Error('Parsed NaN');
+        setCount(num);
+        try { localStorage.setItem(LS_KEY, String(num)); } catch (e) {}
+        return true;
+      });
+  }
+
+  // 3) localStorage 백업
+  function useLocalStorageFallback() {
+    let v = 0;
+    try {
+      v = parseInt(localStorage.getItem(LS_KEY) || '0', 10);
+      if (Number.isNaN(v)) v = 0;
+      v += 1;
+      localStorage.setItem(LS_KEY, String(v));
+    } catch (e) {
+      // private mode 등으로 localStorage 불가하면 1부터
+      v = (typeof v === 'number' && v > 0) ? v : 1;
+    }
+    setCount(v);
+    return true;
+  }
+
+  // 실행 (순차 폴백)
+  tryCountAPI()
+    .catch(() => trySeeYouFarm())
+    .catch(() => useLocalStorageFallback());
+})();
+</script>
+
 </body>
 </html>
