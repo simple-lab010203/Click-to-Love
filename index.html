@@ -261,15 +261,33 @@
 </div>
 
 <script>
-fetch("https://api.countapi.xyz/hit/simple-lab010203.github.io/Click-to-Love")
-  .then(res => res.json())
-  .then(res => {
-    document.getElementById("countNum").textContent = res.value.toLocaleString();
-  })
-  .catch(() => {
-    document.getElementById("countNum").textContent = "offline";
-  });
+(async () => {
+  const NS  = encodeURIComponent('simple-lab010203.github.io');
+  const KEY = encodeURIComponent('Click-to-Love');
+
+  const numEl = document.getElementById("countNum");
+
+  async function tryFetch(url){
+    const r = await fetch(url, {cache: 'no-store'});
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    const j = await r.json();
+    if(typeof j.value !== 'number') throw new Error('Bad payload');
+    return j.value;
+  }
+
+  try {
+    // 1) 우선 현재값 조회 (차단 적음)
+    let val;
+    try { val = await tryFetch(`https://api.countapi.xyz/get/${NS}/${KEY}`); }
+    catch { val = await tryFetch(`https://api.countapi.xyz/hit/${NS}/${KEY}`); }
+    numEl.textContent = val.toLocaleString();
+  } catch (e) {
+    console.warn('visitor counter failed:', e);
+    numEl.textContent = 'offline';
+  }
+})();
 </script>
+
 
 <footer>Built by <b>Sotteok</b> · Click to Love 💘</footer>
 
