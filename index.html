@@ -48,13 +48,15 @@
   }
 }
 
-/* PC: 10열 설정 대신, 보이는 열 수에 맞게 조정 */
+/* PC: 8열로 수정 후, 중앙 정렬 추가 */
 @media (min-width: 1200px) {
   #stage {
-    /* 기존: grid-template-columns: repeat(10, 1fr); */
-    /* 변경: 8열로 맞추면 마지막 줄의 4개 카드도 8열의 중앙에 정렬됨 */
-    grid-template-columns: repeat(8, 1fr); /* 8개의 균등한 열로 변경 */
-    /* ... 나머지 동일 ... */
+    grid-template-columns: repeat(8, 1fr); /* 8열로 수정 */
+    gap: 22px;
+    width: min(92vw, 1200px);
+    
+    /* ✅ 이 줄을 추가하여 8개의 열이 스테이지 중앙에 오도록 함 */
+    justify-content: center; 
   }
 }
 
