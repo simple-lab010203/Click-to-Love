@@ -48,12 +48,13 @@
   }
 }
 
-/* PC: 10열 */
+/* PC: 10열 설정 대신, 보이는 열 수에 맞게 조정 */
 @media (min-width: 1200px) {
   #stage {
-    grid-template-columns: repeat(10, 1fr);
-    gap: 22px;
-    width: min(92vw, 1200px);
+    /* 기존: grid-template-columns: repeat(10, 1fr); */
+    /* 변경: 8열로 맞추면 마지막 줄의 4개 카드도 8열의 중앙에 정렬됨 */
+    grid-template-columns: repeat(8, 1fr); /* 8개의 균등한 열로 변경 */
+    /* ... 나머지 동일 ... */
   }
 }
 
