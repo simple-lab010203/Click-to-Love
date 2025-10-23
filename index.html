@@ -28,12 +28,14 @@
   width: min(92vw, 720px);
   justify-items: center;
 }
-@media (min-width: 768px){
+/* 데스크톱-와이드: 10열 */
+@media (min-width: 1200px){
   #stage{
-    grid-template-columns: repeat(6, 1fr);
-    gap: 24px;
+    grid-template-columns: repeat(10, 1fr); /* 10개씩 */
+    width: min(92vw, 1200px);               /* 컨테이너도 조금 넓혀줌 */
   }
 }
+
 
 /* ✅ 카드(박스) 크기 완전 고정 */
 .char{
