@@ -372,20 +372,44 @@ window.addEventListener('DOMContentLoaded', () => {
   const stage = document.getElementById('stage');
   if (!stage) return;
 
-  // 모든 캐릭터 카드 가져오기
-  const items = Array.from(stage.querySelectorAll('.char'));
+  // 1) 현재 DOM 순서를 기록하고, 빈칸/일반 분리
+  const original = Array.from(stage.querySelectorAll('.char'));
+  const empties = [];   // { el, idx }
+  const normals = [];   // 요소만
 
-  // data-series 기준 ㄱㄴㄷ / ABC 순 정렬
-  items.sort((a, b) => {
-    const seriesA = a.getAttribute('data-series') || '';
-    const seriesB = b.getAttribute('data-series') || '';
-    return seriesA.localeCompare(seriesB, 'ko', { sensitivity: 'base' });
+  original.forEach((el, idx) => {
+    if (el.classList.contains('empty')) {
+      empties.push({ el, idx });      // 빈칸은 '원래 인덱스' 보존
+    } else {
+      normals.push(el);                // 일반 캐릭터만 정렬 대상으로
+    }
   });
 
-  // 정렬 반영
-  items.forEach(el => stage.appendChild(el));
+  // 2) 일반 캐릭터만 data-series 기준으로 정렬 (한글 우선)
+  normals.sort((a, b) => {
+    const A = (a.dataset.series || '').trim();
+    const B = (b.dataset.series || '').trim();
+    return A.localeCompare(B, 'ko', { sensitivity: 'base' });
+  });
+
+  // 3) 원래 길이만큼 새 순서 구성: 빈칸은 원래 자리, 나머지는 정렬된 순서대로
+  const result = [];
+  let n = 0;
+  for (let i = 0; i < original.length; i++) {
+    const emptyHere = empties.find(e => e.idx === i);
+    if (emptyHere) {
+      result.push(emptyHere.el);      // 빈칸은 제자리 유지
+    } else {
+      result.push(normals[n++]);      // 정렬된 일반 캐릭터 채우기
+    }
+  }
+
+  // 4) DOM 갱신
+  stage.innerHTML = '';
+  result.forEach(el => stage.appendChild(el));
 });
 </script>
+
   <script>
     const stage = document.getElementById('stage');
     const clickSound = document.getElementById('clickSound');
