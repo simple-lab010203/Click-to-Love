@@ -98,6 +98,14 @@
   box-shadow: 0 4px 10px rgba(0,0,0,0.08);
   background: transparent; /* 혹시 이미지가 PNG여도 경계선 자연스럽게 */
 }
+ /* 모바일에서 카드 전체 그림자 제거 */
+@media (hover: none), (pointer: coarse) {
+  .char {
+    box-shadow: none !important;   /* 카드 바깥 그림자 제거 */
+    background: transparent !important; /* 혹시 배경색이 들어간 경우도 제거 */
+  }
+}
+ 
 
 /* 이름 + 제목 영역 그대로 유지 */
 .name{
