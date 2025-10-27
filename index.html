@@ -3,8 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+  
 <title>Click to Love 💘</title>
 <style>
+  /* Prevent mobile auto text zoom */
+  html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
   body {
     background-color: #FFF8F2;
     color: #5C5C5C;
@@ -173,6 +178,65 @@
     font-size: 0.9em;
     color: #888;
   }
+  /* EN: Mobile text crisp + no weird tap/press effects
+   KR: 모바일 텍스트 선명/눌렀을 때 번쩍·흐림 방지 세트 */
+
+/* 탭 하이라이트 제거 */
+* { -webkit-tap-highlight-color: transparent; }
+
+/* 카드 눌렀을 때 그림자/아웃라인 제거 + 텍스트 흐림 유발 transform 금지 */
+.card:focus,
+.card:active { outline: none; box-shadow: none !important; }
+.card:active { transform: none !important; }
+
+/* 눌렀을 때 살짝 축소 효과가 필요하면 이미지에만 적용 (선택) */
+.card:active .thumb { transform: scale(.98); }
+
+/* ====== “대사” 텍스트 선명도 & 줄바꿈 제어 ====== */
+/* (A) 대사가 별도 요소(.speech)인 경우 */
+.speech {
+  position: absolute;
+  left: 50%;
+  top: -8px;
+  transform: translate(-50%, -100%);   /* 텍스트에 scale/rotate 금지 */
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;                  /* 한 줄 고정 (넘치면 …) */
+  word-break: keep-all;                 /* 한글 음절 분절 방지 */
+  max-width: min(88vw, 320px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  /* 모바일 렌더링 선명도 */
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  backface-visibility: hidden;
+  filter: none;                         /* blur 등 금지 */
+}
+
+/* (B) data 속성으로 말풍선을 띄우는 구조면(예: [data-word]::after) 이 스타일도 추가 */
+[data-word]::after {
+  /* 기본 값은 프로젝트에 이미 있을 테니, 선명도/줄바꿈만 보강 */
+  white-space: nowrap;
+  word-break: keep-all;
+  max-width: min(88vw, 320px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  backface-visibility: hidden;
+  filter: none;
+}
+
+/* 카드 자체 그림자/클릭 효과 때문에 텍스트가 흔들리는 걸 방지하고 싶으면,
+   말풍선 레이어를 항상 “분리”해둠 */
+.speech, 
+[data-word]::after {
+  will-change: transform;
+  transform: translateZ(0);  /* 레이어 분리로 서브픽셀 흔들림 완화 */
+}
+
 </style>
 </head>
 <body>
