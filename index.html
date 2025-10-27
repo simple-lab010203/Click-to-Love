@@ -236,6 +236,19 @@
   will-change: transform;
   transform: translateZ(0);  /* 레이어 분리로 서브픽셀 흔들림 완화 */
 }
+/* 💬 모바일에서 클릭 대사(.word) 깨짐 방지 */
+.word {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  backface-visibility: hidden;
+  filter: none;
+  white-space: nowrap;       /* 한 줄로 유지 */
+  word-break: keep-all;      /* 한글 단어 중간 끊김 방지 */
+  max-width: min(90vw, 300px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transform: translateZ(0);  /* 서브픽셀 깨짐 방지 */
+}
 
 </style>
 </head>
